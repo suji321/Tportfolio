@@ -68,10 +68,11 @@ body {
   height: auto;
 }
 
-/* Slight tilt on hover to hint at interactivity */
+/* Remove the default hover tilt so that rotation is controlled via JavaScript.
+   The JS listener calculates tilt based on mouse position for a more
+   immersive 3D interaction. */
 .card:hover {
-  transform: rotateX(8deg) rotateY(-8deg);
-  box-shadow: 0 30px 60px rgba(0, 255, 144, 0.2);
+  /* intentionally left empty */
 }
 
 .caption {
@@ -103,7 +104,12 @@ body {
   margin-bottom: 8px;
   color: var(--accent);
   user-select: none;
-  white-space: nowrap;
+  /* Layout the navigation as a flexbox that wraps on smaller screens.
+     Removing white-space: nowrap allows links to wrap instead of overflow. */
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 6px;
+  column-gap: 4px;
   position: sticky;
   top: 0;
   padding-bottom: 6px;
@@ -183,6 +189,9 @@ body {
   color: var(--text-color);
   font-family: 'Fira Code', monospace;
   font-size: 0.9rem;
+
+  /* Make the caret blink in our accent colour to enhance the terminal feel. */
+  caret-color: var(--accent);
 }
 
 /* Scrollbar customization for terminal */

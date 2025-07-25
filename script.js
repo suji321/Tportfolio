@@ -125,7 +125,9 @@ function runCommand(cmd) {
       return;
     }
     const output = commands[key];
-    typeOutput(output, 'output');
+    // Use a shorter delay for very long outputs to improve perceived responsiveness.
+    const delay = output.length > 300 ? 10 : 15;
+    typeOutput(output, 'output', delay);
   } else if (key.trim() === '') {
     // do nothing on empty input
   } else {
@@ -185,4 +187,26 @@ window.addEventListener('load', function () {
       );
     },
   );
+
+  // Enable interactive 3D card rotation.  The amount of rotation is computed
+  // based on pointer position within the card wrapper.  When the pointer
+  // leaves the wrapper, the card smoothly returns to its resting state.
+  const cardWrapper = document.querySelector('.card-wrapper');
+  const card = document.getElementById('idCard');
+  if (cardWrapper && card) {
+    cardWrapper.addEventListener('mousemove', function (e) {
+      const rect = cardWrapper.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      // Scale the rotation to a gentle range (±15 degrees).
+      const rotateX = (y / rect.height) * -15;
+      const rotateY = (x / rect.width) * 15;
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      card.style.transition = 'transform 0.1s ease';
+    });
+    cardWrapper.addEventListener('mouseleave', function () {
+      card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      card.style.transition = 'transform 0.5s ease';
+    });
+  }
 });
