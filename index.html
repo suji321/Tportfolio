@@ -1,0 +1,77 @@
+<!--
+  Portfolio website for Sujith Sasikumar
+  This site takes inspiration from Mark Gatere's terminal‑style portfolio and
+  uses information gleaned from Sujith's resume.  A dark palette with
+  neon‑green accents, a 3D id card, and a faux terminal deliver a playful yet
+  professional experience.  You can click the commands in the navigation or
+  type them into the prompt below to explore his projects, skills,
+  experience and more.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sujith Sasikumar | Portfolio</title>
+    <!-- Google Fonts for a monospaced terminal font and a clean sans‑serif -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Montserrat:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="container">
+      <!-- Left panel: 3D ID card with a modern, neon design -->
+      <div id="left-panel">
+        <div class="card-wrapper">
+          <div class="card" id="idCard">
+            <img src="assets/id_card.png" alt="Futuristic ID badge" />
+          </div>
+        </div>
+        <div class="caption">Interactive 3D Card</div>
+      </div>
+      <!-- Right panel: faux terminal and navigation -->
+      <div id="terminal-container">
+        <nav id="nav">
+          <a href="#" data-command="help">help</a>
+          <span>|</span>
+          <a href="#" data-command="about">about</a>
+          <span>|</span>
+          <a href="#" data-command="projects">projects</a>
+          <span>|</span>
+          <a href="#" data-command="skills">skills</a>
+          <span>|</span>
+          <a href="#" data-command="experience">experience</a>
+          <span>|</span>
+          <a href="#" data-command="education">education</a>
+          <span>|</span>
+          <a href="#" data-command="contact">contact</a>
+          <span>|</span>
+          <a href="#" data-command="clear">clear</a>
+        </nav>
+        <div id="terminal">
+          <!-- Output lines will be appended here dynamically by script.js -->
+        </div>
+        <div id="input-line">
+          <span class="prompt" id="prompt">sujith@portfolio:~$</span>
+          <input
+            id="commandInput"
+            type="text"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+          />
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

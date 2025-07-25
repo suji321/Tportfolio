@@ -1,0 +1,229 @@
+/*
+ * Global styles for Sujith Sasikumar's portfolio.
+ * The design embraces a dark terminal aesthetic with neon‑green highlights.
+ */
+:root {
+  --bg-color: #010712;
+  --panel-bg: #050b1e;
+  --text-color: #c9d1d9;
+  --accent: #00ff90;
+  --prompt-color: #00ff90;
+  --error-color: #ff5f5f;
+}
+
+body {
+  margin: 0;
+  font-family: 'Fira Code', monospace;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  /* allow the page to scroll on very small screens */
+  overflow-x: hidden;
+}
+
+/* The root container spans the full viewport height */
+#container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+/* Left panel styling */
+#left-panel {
+  flex: 0 0 35%;
+  min-width: 320px;
+  max-width: 400px;
+  background-color: var(--panel-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  border-right: 1px solid rgba(0, 255, 144, 0.2);
+}
+
+/* Card wrapper gives perspective to the card for 3D rotation */
+.card-wrapper {
+  perspective: 1000px;
+  width: 80%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.card {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 255, 144, 0.15);
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Slight tilt on hover to hint at interactivity */
+.card:hover {
+  transform: rotateX(8deg) rotateY(-8deg);
+  box-shadow: 0 30px 60px rgba(0, 255, 144, 0.2);
+}
+
+.caption {
+  margin-top: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-align: center;
+}
+
+/* Right panel: terminal and navigation */
+/* The right panel uses flexbox to stack the nav, terminal and input line.
+   Setting height to 100% keeps the input line anchored at the bottom. */
+#terminal-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  height: 100%;
+  overflow: hidden;
+}
+
+#nav {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  color: var(--accent);
+  user-select: none;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  padding-bottom: 6px;
+  background-color: var(--bg-color);
+}
+
+#nav a {
+  color: var(--accent);
+  text-decoration: none;
+  margin: 0 4px;
+  transition: color 0.2s ease;
+}
+
+#nav a:hover {
+  color: #39ffa1;
+}
+
+#nav span {
+  color: var(--accent);
+  margin: 0 4px;
+}
+
+#terminal {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  padding-right: 4px;
+}
+
+/* Lines printed by script */
+.line,
+.command,
+.output,
+.error {
+  display: block;
+  margin: 2px 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.command {
+  color: var(--accent);
+}
+
+.output {
+  color: var(--text-color);
+}
+
+.error {
+  color: var(--error-color);
+}
+
+#input-line {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba(0, 255, 144, 0.1);
+  padding-top: 8px;
+  margin-top: 8px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  flex: 0 0 auto;
+  background-color: var(--bg-color);
+}
+
+.prompt {
+  margin-right: 4px;
+  color: var(--prompt-color);
+}
+
+#commandInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-color);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+}
+
+/* Scrollbar customization for terminal */
+#terminal::-webkit-scrollbar {
+  width: 6px;
+}
+
+#terminal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#terminal::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 255, 144, 0.3);
+  border-radius: 3px;
+}
+
+/* Responsive: hide left panel on small screens */
+@media (max-width: 768px) {
+  /* Stack the panels vertically on small screens */
+  #container {
+    flex-direction: column;
+  }
+  #left-panel {
+    flex: none;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 255, 144, 0.2);
+    padding: 20px 20px 10px;
+  }
+  .card-wrapper {
+    width: 60%;
+    max-width: 240px;
+  }
+  .caption {
+    margin-bottom: 8px;
+  }
+  #terminal-container {
+    flex: 1;
+    padding: 20px;
+    height: auto;
+  }
+}
