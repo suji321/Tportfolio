@@ -330,8 +330,25 @@ window.addEventListener('load', function () {
 
   restartButton.addEventListener('click', function () {
     startGame();
+    
   });
-
+  
   // Start the game initially
   startGame();
 });
+
+async function askAssistant(question) {
+  // Post the question to your own API route
+  const res = await fetch('/api/gemini', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Server returned status ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.answer || 'The assistant returned no response.';
+}
