@@ -235,6 +235,19 @@ body {
     padding: 20px;
     height: auto;
   }
+
+  /* Hide the game and related controls on mobile screens */
+  .game-container,
+  .caption,
+  #pauseGameButton,
+  #jumpButton {
+    display: none;
+  }
+
+  /* Show the user's name instead of the game on mobile */
+  .mobile-name {
+    display: block;
+  }
 }
 
 /*
@@ -351,6 +364,14 @@ body {
   color: var(--background-color);
 }
 
+/* By default, the name used on mobile is hidden on larger screens */
+.mobile-name {
+  display: none;
+  color: var(--accent);
+  font-family: 'Fira Code', monospace;
+  text-align: center;
+  margin-top: 8px;
+}
 /* Position the pause button below the caption */
 /* Position pause and jump buttons below the caption */
 #pauseGameButton,

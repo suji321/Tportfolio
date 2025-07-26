@@ -18,7 +18,8 @@ const commands = {
     "  experience – my work experience\n" +
     "  education  – my educational background\n" +
     "  contact    – how to reach me\n" +
-    "  clear      – clear the terminal",
+    "  clear      – clear the terminal\n" +
+    "  ai <question> – ask the AI assistant a question (requires backend setup)",
   about:
     "Hello, I'm Sujith Sasikumar! I'm currently pursuing an M.Tech in Artificial" +
     " Intelligence and Data Analytics at the National Institute of Technology" +
@@ -68,6 +69,33 @@ const commands = {
     "Kerala 680517",
   clear: ""
 };
+
+/**
+ * Query an external AI assistant. This function sends the user's question to a
+ * backend endpoint and returns the AI's answer. You must replace
+ * YOUR_BACKEND_ENDPOINT and YOUR_API_KEY with your own server and API key.
+ * The backend should accept a JSON payload containing a `question` field and
+ * return a JSON response with an `answer` field.
+ *
+ * @param {string} question – the user’s query
+ * @returns {Promise<string>} – the assistant’s answer
+ */
+async function askAssistant(question) {
+  // Send the question to the serverless API route that proxies the Gemini API.
+  // This endpoint should be defined in /api/gemini.js on the server side.
+  const res = await fetch('/api/gemini', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ question })
+  });
+  if (!res.ok) {
+    throw new Error(`Server returned status ${res.status}`);
+  }
+  const data = await res.json();
+  return data.answer || 'The assistant returned no response.';
+}
 
 /**
  * Appends a line immediately to the terminal.  Used for printing the
@@ -130,6 +158,24 @@ function runCommand(cmd) {
     typeOutput(output, 'output', delay);
   } else if (key.trim() === '') {
     // do nothing on empty input
+  } else if (cmd.toLowerCase().startsWith('ai ')) {
+    // Handle AI assistant queries.  Extract the query after the 'ai ' prefix.
+    const query = cmd.slice(3).trim();
+    if (!query) {
+      typeOutput('Please provide a question after the ai command.', 'error');
+      return;
+    }
+    // Print the command line to the terminal
+    appendLine(`${promptStr} ${cmd}`, 'command');
+    // Show a thinking message while waiting for the AI
+    typeOutput('Thinking...', 'output', 20, async function () {
+      try {
+        const answer = await askAssistant(query);
+        typeOutput(answer, 'output', 15);
+      } catch (err) {
+        typeOutput('Error contacting AI assistant. Please check your configuration.', 'error');
+      }
+    });
   } else {
     typeOutput(`command not found: ${cmd}`, 'error');
   }
@@ -187,6 +233,14 @@ window.addEventListener('load', function () {
       );
     },
   );
+
+  // Do not initialise the Dino game on small screens (mobile). When the screen
+  // width is 768px or less, the game is hidden via CSS and the user's name is
+  // displayed instead. This early return prevents unnecessary event
+  // registration and timers on mobile devices.
+  if (window.innerWidth <= 768) {
+    return;
+  }
 
   // Initialize the simple Dino game with pause and overlay capabilities
   const dino = document.getElementById('dino');
@@ -330,25 +384,8 @@ window.addEventListener('load', function () {
 
   restartButton.addEventListener('click', function () {
     startGame();
-    
   });
-  
+
   // Start the game initially
   startGame();
 });
-
-async function askAssistant(question) {
-  // Post the question to your own API route
-  const res = await fetch('/api/gemini', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ question }),
-  });
-
-  if (!res.ok) {
-    throw new Error(`Server returned status ${res.status}`);
-  }
-
-  const data = await res.json();
-  return data.answer || 'The assistant returned no response.';
-}
