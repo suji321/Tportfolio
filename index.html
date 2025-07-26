@@ -22,9 +22,16 @@
         <div class="game-container">
           <div id="dino"></div>
           <div id="obstacle"></div>
+          <!-- Overlay to display game over message inside the game area -->
+          <div id="gameOverOverlay" class="overlay hidden">
+            <div class="game-over-text">GAME OVER</div>
+            <button id="restartButton" class="game-btn">Play Again</button>
+          </div>
         </div>
         <!-- Caption under the game -->
         <div class="caption">Press space to jump</div>
+        <!-- Pause/resume control for the game -->
+        <button id="pauseGameButton" class="game-btn">Pause Game</button>
       </div>
       <!-- Right panel: faux terminal and navigation -->
       <div id="terminal-container">

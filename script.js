@@ -188,46 +188,129 @@ window.addEventListener('load', function () {
     },
   );
 
-  // Initialize the simple Dino game
+  // Initialize the simple Dino game with pause and overlay capabilities
   const dino = document.getElementById('dino');
   const obstacle = document.getElementById('obstacle');
-  let isJumping = false;
+  const pauseButton = document.getElementById('pauseGameButton');
+  const overlay = document.getElementById('gameOverOverlay');
+  const restartButton = document.getElementById('restartButton');
 
+  // Game state flags
+  let isJumping = false;
+  let isPaused = false;
+  let isGameOver = false;
+  let collisionInterval;
+
+  /**
+   * Starts or restarts the game by resetting animations and timers.
+   */
+  function startGame() {
+    // Reset flags
+    isJumping = false;
+    isPaused = false;
+    isGameOver = false;
+    // Hide the game‑over overlay
+    overlay.classList.add('hidden');
+    // Reset obstacle animation
+    obstacle.style.animation = 'none';
+    // Force reflow to restart animation
+    void obstacle.offsetWidth;
+    obstacle.style.animation = 'obstacle-move 1.5s infinite linear';
+    // Restart collision detection
+    if (collisionInterval) clearInterval(collisionInterval);
+    collisionInterval = setInterval(checkCollision, 10);
+    // Update pause button text
+    pauseButton.textContent = 'Pause Game';
+  }
+
+  /**
+   * Handles the jump action when the player presses space or arrow up.
+   */
   function jump() {
-    if (isJumping) return;
+    // Prevent jumping if currently jumping, paused or game over
+    if (isJumping || isPaused || isGameOver) return;
     isJumping = true;
     dino.classList.add('jump');
-    // remove the jump class after the animation completes
     setTimeout(() => {
       dino.classList.remove('jump');
       isJumping = false;
     }, 500);
   }
 
-  // Listen for the space bar to trigger a jump
+  /**
+   * Checks for collisions between the dino and obstacle. If a collision
+   * occurs while the dino is on the ground, it triggers game over.
+   */
+  function checkCollision() {
+    const dinoBottom = parseInt(getComputedStyle(dino).getPropertyValue('bottom'));
+    const obstacleRight = parseInt(getComputedStyle(obstacle).getPropertyValue('right'));
+    const containerWidth = obstacle.parentElement.offsetWidth;
+    // Collision region: when obstacle is near the dino horizontally and dino is on ground
+    if (!isGameOver && !isPaused) {
+      if (
+        obstacleRight < (containerWidth - 70) &&
+        obstacleRight > (containerWidth - 120) &&
+        dinoBottom === 0
+      ) {
+        gameOver();
+      }
+    }
+  }
+
+  /**
+   * Pauses the game, stopping obstacle animation and collision detection.
+   */
+  function pauseGame() {
+    if (isGameOver || isPaused) return;
+    isPaused = true;
+    // Pause the obstacle animation
+    obstacle.style.animationPlayState = 'paused';
+    if (collisionInterval) clearInterval(collisionInterval);
+    pauseButton.textContent = 'Resume Game';
+  }
+
+  /**
+   * Resumes the game after being paused.
+   */
+  function resumeGame() {
+    if (isGameOver || !isPaused) return;
+    isPaused = false;
+    obstacle.style.animationPlayState = 'running';
+    collisionInterval = setInterval(checkCollision, 10);
+    pauseButton.textContent = 'Pause Game';
+  }
+
+  /**
+   * Ends the game, showing the overlay and stopping animations.
+   */
+  function gameOver() {
+    isGameOver = true;
+    // Stop obstacle animation and collision checks
+    obstacle.style.animation = 'none';
+    if (collisionInterval) clearInterval(collisionInterval);
+    // Show game over overlay
+    overlay.classList.remove('hidden');
+  }
+
+  // Event listeners for jump, pause/resume and restart actions
   document.addEventListener('keydown', function (e) {
-    // both Space and ArrowUp will trigger a jump
     if (e.code === 'Space' || e.code === 'ArrowUp') {
       jump();
     }
   });
 
-  // Collision detection
-  setInterval(function () {
-    // getComputedStyle returns values like '143px', so parseInt them
-    const dinoBottom = parseInt(getComputedStyle(dino).getPropertyValue('bottom'));
-    const obstacleRight = parseInt(getComputedStyle(obstacle).getPropertyValue('right'));
-    // If the obstacle is within 50px of the dino from the right side and the dino is on the ground
-    if (obstacleRight < (obstacle.parentElement.offsetWidth - 70) && obstacleRight > (obstacle.parentElement.offsetWidth - 120) && dinoBottom === 0) {
-      // Stop the obstacle animation and show an alert
-      obstacle.style.animation = 'none';
-      alert('Game over');
-      // Restart the animation for replay
-      obstacle.style.display = 'none';
-      setTimeout(() => {
-        obstacle.style.display = 'block';
-        obstacle.style.animation = '';
-      }, 500);
+  pauseButton.addEventListener('click', function () {
+    if (isPaused) {
+      resumeGame();
+    } else {
+      pauseGame();
     }
-  }, 10);
+  });
+
+  restartButton.addEventListener('click', function () {
+    startGame();
+  });
+
+  // Start the game initially
+  startGame();
 });
