@@ -188,25 +188,46 @@ window.addEventListener('load', function () {
     },
   );
 
-  // Enable interactive 3D card rotation.  The amount of rotation is computed
-  // based on pointer position within the card wrapper.  When the pointer
-  // leaves the wrapper, the card smoothly returns to its resting state.
-  const cardWrapper = document.querySelector('.card-wrapper');
-  const card = document.getElementById('idCard');
-  if (cardWrapper && card) {
-    cardWrapper.addEventListener('mousemove', function (e) {
-      const rect = cardWrapper.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      // Scale the rotation to a gentle range (±15 degrees).
-      const rotateX = (y / rect.height) * -15;
-      const rotateY = (x / rect.width) * 15;
-      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      card.style.transition = 'transform 0.1s ease';
-    });
-    cardWrapper.addEventListener('mouseleave', function () {
-      card.style.transform = 'rotateX(0deg) rotateY(0deg)';
-      card.style.transition = 'transform 0.5s ease';
-    });
+  // Initialize the simple Dino game
+  const dino = document.getElementById('dino');
+  const obstacle = document.getElementById('obstacle');
+  let isJumping = false;
+
+  function jump() {
+    if (isJumping) return;
+    isJumping = true;
+    dino.classList.add('jump');
+    // remove the jump class after the animation completes
+    setTimeout(() => {
+      dino.classList.remove('jump');
+      isJumping = false;
+    }, 500);
   }
+
+  // Listen for the space bar to trigger a jump
+  document.addEventListener('keydown', function (e) {
+    // both Space and ArrowUp will trigger a jump
+    if (e.code === 'Space' || e.code === 'ArrowUp') {
+      jump();
+    }
+  });
+
+  // Collision detection
+  setInterval(function () {
+    // getComputedStyle returns values like '143px', so parseInt them
+    const dinoBottom = parseInt(getComputedStyle(dino).getPropertyValue('bottom'));
+    const obstacleRight = parseInt(getComputedStyle(obstacle).getPropertyValue('right'));
+    // If the obstacle is within 50px of the dino from the right side and the dino is on the ground
+    if (obstacleRight < (obstacle.parentElement.offsetWidth - 70) && obstacleRight > (obstacle.parentElement.offsetWidth - 120) && dinoBottom === 0) {
+      // Stop the obstacle animation and show an alert
+      obstacle.style.animation = 'none';
+      alert('Game over');
+      // Restart the animation for replay
+      obstacle.style.display = 'none';
+      setTimeout(() => {
+        obstacle.style.display = 'block';
+        obstacle.style.animation = '';
+      }, 500);
+    }
+  }, 10);
 });

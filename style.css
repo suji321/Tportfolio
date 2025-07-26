@@ -236,3 +236,70 @@ body {
     height: auto;
   }
 }
+
+/*
+ * Dino Game styles
+ * The game replaces the interactive ID card in the left panel.  A simple
+ * box represents the dino and another box represents the obstacle.  The
+ * colours are derived from the existing CSS variables to blend into the
+ * site's neon aesthetic.
+ */
+.game-container {
+  width: 80%;
+  max-width: 320px;
+  height: 200px;
+  border: 1px solid rgba(0, 255, 144, 0.3);
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+#dino {
+  width: 40px;
+  height: 40px;
+  background-color: var(--accent);
+  position: absolute;
+  bottom: 0;
+  left: 20px;
+}
+
+#dino.jump {
+  animation: dino-jump 0.5s linear;
+}
+
+#obstacle {
+  width: 20px;
+  height: 40px;
+  background-color: var(--error-color);
+  position: absolute;
+  bottom: 0;
+  right: -20px;
+  animation: obstacle-move 1.5s infinite linear;
+}
+
+@keyframes dino-jump {
+  0% {
+    bottom: 0;
+  }
+  30% {
+    bottom: 60px;
+  }
+  50% {
+    bottom: 80px;
+  }
+  70% {
+    bottom: 60px;
+  }
+  100% {
+    bottom: 0;
+  }
+}
+
+@keyframes obstacle-move {
+  0% {
+    right: -20px;
+  }
+  100% {
+    right: 100%;
+  }
+}
