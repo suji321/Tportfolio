@@ -352,7 +352,9 @@ body {
 }
 
 /* Position the pause button below the caption */
-#pauseGameButton {
+/* Position pause and jump buttons below the caption */
+#pauseGameButton,
+#jumpButton {
   display: block;
   margin: 8px auto 0;
 }

@@ -194,6 +194,9 @@ window.addEventListener('load', function () {
   const pauseButton = document.getElementById('pauseGameButton');
   const overlay = document.getElementById('gameOverOverlay');
   const restartButton = document.getElementById('restartButton');
+  // Optional on-screen jump control (useful for mobile)
+  const jumpButton = document.getElementById('jumpButton');
+  const gameContainer = document.querySelector('.game-container');
 
   // Game state flags
   let isJumping = false;
@@ -298,6 +301,24 @@ window.addEventListener('load', function () {
       jump();
     }
   });
+
+  // Allow tapping the on-screen jump button to trigger a jump
+  if (jumpButton) {
+    jumpButton.addEventListener('click', function () {
+      jump();
+    });
+  }
+
+  // Allow tapping anywhere inside the game container to jump on touch devices
+  if (gameContainer) {
+    gameContainer.addEventListener('click', function () {
+      jump();
+    });
+    // Support touchstart separately to improve responsiveness on mobile
+    gameContainer.addEventListener('touchstart', function () {
+      jump();
+    });
+  }
 
   pauseButton.addEventListener('click', function () {
     if (isPaused) {
